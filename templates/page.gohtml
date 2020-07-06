@@ -1,0 +1,42 @@
+{{define "page"}}
+
+<html lang="en">
+    <head>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <meta charset="utf-8">
+        <script src ="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.bundle.min.js"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        <title>Pushy Page</title>
+    </head>
+    <body>
+        <div class="container-fluid" style="text-align:center">
+            <h1>Push....</h1>
+            <div class="jumbotron" style="margin:auto" id="jumbo_div">
+                <form action='/push' method="POST" class="form" >
+                    <div class="container p-3" id="form_div">
+                        <div class="row">
+                            <div class="col">
+                                <h2>
+                                    <input type="text" id="message" name="message"  class="form-control" placeholder="Type your message here" value={{.Message}}>
+                                </h2>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <a href='/push' class="btn btn-outline-secondary" role="button">Cancel</a>
+                            </div>
+                            <div class="col">
+                                <button type="submit" class="btn btn-primary">Push it</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    </body>
+</html>
+
+{{end}}
