@@ -17,13 +17,13 @@ func ShowPushButton(w http.ResponseWriter, r *http.Request) {
 
 	data.Message = "Bite me."
 
-	summaryPage, err := template.ParseFiles("./templates/summary.gohtml")
+	page, err := template.ParseFiles("./templates/page.gohtml")
 	if err != nil {
-		fmt.Println("Error parsing summary template: ", err)
+		fmt.Println("Error parsing template: ", err)
 		return
 	}
 
-	summaryPage.ExecuteTemplate(w, "summarypage", data)
+	page.ExecuteTemplate(w, "page", data)
 
 }
 
