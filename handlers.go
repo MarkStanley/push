@@ -1,11 +1,10 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"text/template"
 )
 
@@ -65,28 +64,44 @@ func PushMessage(w http.ResponseWriter, r *http.Request) {
 	if _, ok := FCMTokenMap[tm.Token]; !ok {
 		FCMTokenMap[tm.Token] = true
 	}
-	IDs = append(IDs, tm.Token)
-	message := r.FormValue("message")
-	m := FCMMessage{
-		RegistrationIDs: IDs,
-		Data:            map[string]string{"message": message},
-	}
+	/*	IDs = append(IDs, tm.Token)
+		message := r.FormValue("message")
+		m := FCMMessage{
+			RegistrationIDs: IDs,
+			Data:            map[string]string{"message": message},
+		}
 
-	jd, err := json.Marshal(&m)
-	if err != nil {
-		log.Printf("Failed to marshal JSON: %s", err.Error())
-		return
-	}
+		jd, err := json.Marshal(&m)
+		if err != nil {
+			log.Printf("Failed to marshal JSON: %s", err.Error())
+			return
+		}
 
-	log.Printf("FCM Message: %s", string(jd))
-	log.Printf("FCM Token: %s", tm.Token)
+		log.Printf("FCM Message: %s", string(jd))
+		log.Printf("FCM Token: %s", tm.Token)
 
-	//Lets create the request
-	req, err := http.NewRequest("POST", FCMServerURL, bytes.NewReader(jd))
+
+		//Lets create the request
+		req, err := http.NewRequest("POST", FCMServerURL, bytes.NewReader(jd))
+		if err != nil {
+			log.Printf("Failed to create new HTTP request: %v", err)
+		}
+	*/
+	body := strings.NewReader(`
+		{
+			"notification": {
+				"title": "DILU",
+				"body": "DILU is awesome",
+				"click_action": "http://localhost:3000/",
+				"icon": "http://url-to-an-icon/icon.png"
+			},
+			"to": "fomlE-yp9cqsgD6xWUhqKK:APA91bHnvDcDsBkH73FiRa5L1ZvcsYX0ra326pe9Df0ruGB9pdSnEp7xP4-2wn53XU_wTDX0JoR8v07yReThU893ZuLb5D3WQomCV-9aQEzdIGTbse4YEkwAmZC6RS2cqGfed0Kw2ic0"
+		}
+		`)
+	req, err := http.NewRequest("POST", FCMServerURL, body)
 	if err != nil {
 		log.Printf("Failed to create new HTTP request: %v", err)
 	}
-
 	req.Header.Set("Authorization", fmt.Sprintf("key=%s", FCMKey))
 	req.Header.Set("Content-Type", "application/json")
 
