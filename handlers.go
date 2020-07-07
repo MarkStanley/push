@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"text/template"
@@ -13,6 +12,7 @@ import (
 // PageData is a convenient struct to pass stuff through to the template
 type PageData struct {
 	Message string
+	Token   string
 }
 
 // FCMMessage - defines the messaging struct for Firebase Cloud Messaging
@@ -44,14 +44,7 @@ func ShowPushButton(w http.ResponseWriter, r *http.Request) {
 	var data PageData
 
 	data.Message = "Bite me."
-
-	var tm FCMTokenMessage
-
-	tm.Token = r.FormValue("token")
-
-	if _, ok := FCMTokenMap[tm.Token]; !ok {
-		FCMTokenMap[tm.Token] = true
-	}
+	data.Token = "fomlE-yp9cqsgD6xWUhqKK:APA91bHnvDcDsBkH73FiRa5L1ZvcsYX0ra326pe9Df0ruGB9pdSnEp7xP4-2wn53XU_wTDX0JoR8v07yReThU893ZuLb5D3WQomCV-9aQEzdIGTbse4YEkwAmZC6RS2cqGfed0Kw2ic0"
 
 	page, err := template.ParseFiles("./templates/page.gohtml")
 	if err != nil {
@@ -66,6 +59,13 @@ func ShowPushButton(w http.ResponseWriter, r *http.Request) {
 // PushMessage pushes a message to the web
 func PushMessage(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Button pushed")
+	var tm FCMTokenMessage
+	tm.Token = r.FormValue("token")
+
+	if _, ok := FCMTokenMap[tm.Token]; !ok {
+		FCMTokenMap[tm.Token] = true
+	}
+	IDs[0] = tm.Token
 	message := r.FormValue("message")
 	m := FCMMessage{
 		RegistrationIDs: IDs,
@@ -79,6 +79,7 @@ func PushMessage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Printf("FCM Message: %s", string(jd))
+	log.Printf("FCM Token: %s", tm.Token)
 
 	//Lets create the request
 	req, err := http.NewRequest("POST", FCMServerURL, bytes.NewReader(jd))
@@ -97,28 +98,4 @@ func PushMessage(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "https://myway.thingitude-apps.com")
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	//json.NewEncoder(w).Encode(sensors)
-}
-
-// SendSW - sends the firebase-messaging-sw.js as the service worker
-func SendSW(w http.ResponseWriter, r *http.Request) {
-	log.Println("Tying to route the service worker")
-	data, err := ioutil.ReadFile("firebase-messaging-sw.js")
-	if err != nil {
-		http.Error(w, "Couldn't read file", http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "application/javascript; charset=utf-8")
-	w.Write(data)
-}
-
-// Sendmanifest - sends the manifest.json
-func SendManifest(w http.ResponseWriter, r *http.Request) {
-	log.Println("Tying to route the manifest")
-	data, err := ioutil.ReadFile("manifest.json")
-	if err != nil {
-		http.Error(w, "Couldn't read file", http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	w.Write(data)
 }
