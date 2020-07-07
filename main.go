@@ -41,6 +41,7 @@ func newRouter() *mux.Router {
 	r.HandleFunc("/push", ShowPushButton).Methods("GET")
 	r.HandleFunc("/push", PushMessage).Methods("POST")
 	r.HandleFunc("/service-worker.js", SendSW).Methods("GET", "POST", "PUT")
+	r.HandleFunc("/manifest.json", SendManifest).Methods("GET", "POST", "PUT")
 
 	staticFileDirectory := http.Dir("./static/")
 	staticFileHandler := http.StripPrefix("/static/", http.FileServer(staticFileDirectory))

@@ -110,3 +110,15 @@ func SendSW(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/javascript; charset=utf-8")
 	w.Write(data)
 }
+
+// Sendmanifest - sends the manifest.json
+func SendManifest(w http.ResponseWriter, r *http.Request) {
+	log.Println("Tying to route the manifest")
+	data, err := ioutil.ReadFile("manifest.json")
+	if err != nil {
+		http.Error(w, "Couldn't read file", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Write(data)
+}
