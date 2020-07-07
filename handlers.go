@@ -65,7 +65,7 @@ func PushMessage(w http.ResponseWriter, r *http.Request) {
 	if _, ok := FCMTokenMap[tm.Token]; !ok {
 		FCMTokenMap[tm.Token] = true
 	}
-	IDs[0] = tm.Token
+	IDs = append(IDs, tm.Token)
 	message := r.FormValue("message")
 	m := FCMMessage{
 		RegistrationIDs: IDs,
