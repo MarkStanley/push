@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"text/template"
@@ -96,4 +97,15 @@ func PushMessage(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "https://myway.thingitude-apps.com")
 	w.Header().Set("Access-Control-Allow-Credentials", "true")
 	//json.NewEncoder(w).Encode(sensors)
+}
+
+// SendSW - sends the firebase-messaging-sw.js as the service worker
+func SendSW(w http.ResponseWriter, r *http.Request) {
+	data, err := ioutil.ReadFile("/static/service-worker.js")
+	if err != nil {
+		http.Error(w, "Couldn't read file", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/javascript; charset=utf-8")
+	w.Write(data)
 }
