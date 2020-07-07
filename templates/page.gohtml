@@ -23,7 +23,7 @@
                         </div>
                         <div class="row">
                             <div class="col">
-                                <a href='/push' class="btn btn-outline-secondary" role="button">Cancel</a>
+                                <a href='/register' class="btn btn-outline-secondary" role="button">Register client</a>
                             </div>
                             <div class="col">
                                 <button type="submit" class="btn btn-primary">Push it</button>
@@ -32,7 +32,17 @@
                     </div>
                 </form>
             </div>
+            <div id="token"></div>
+            <div id="msg"></div>
+            <div id="notis"></div>
+            <div id="err"></div>
         </div>
+        <script>
+        MsgElem = document.getElementById("msg")
+        TokenElem = document.getElementById("token")
+        NotisElem = document.getElementById("notis")
+        ErrElem = document.getElementById("err")
+        </script>
         <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
@@ -55,6 +65,29 @@
         };
         // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
+
+        const messaging = firebase.messaging();
+        messaging
+            .requestPermission()
+            .then(function () {
+                MsgElem.innerHTML = "Notification permission granted." 
+                console.log("Notification permission granted.");
+
+                // get the token in the form of promise
+                return messaging.getToken()
+            })
+            .then(function(token) {
+                TokenElem.innerHTML = "token is : " + token
+            })
+            .catch(function (err) {
+                ErrElem.innerHTML =  ErrElem.innerHTML + "; " + err
+                console.log("Unable to get permission to notify.", err);
+            });
+
+        messaging.onMessage(function(payload) {
+            console.log("Message received. ", payload);
+            NotisElem.innerHTML = NotisElem.innerHTML + JSON.stringify(payload) 
+        });
         </script>
     </body>
 </html>

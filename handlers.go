@@ -89,7 +89,7 @@ func PushMessage(w http.ResponseWriter, r *http.Request) {
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
-	resp, err := client.Do(r)
+	resp, err := client.Do(req)
 
 	fmt.Printf("And the response was: %v", resp)
 
