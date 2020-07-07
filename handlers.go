@@ -101,7 +101,8 @@ func PushMessage(w http.ResponseWriter, r *http.Request) {
 
 // SendSW - sends the firebase-messaging-sw.js as the service worker
 func SendSW(w http.ResponseWriter, r *http.Request) {
-	data, err := ioutil.ReadFile("/static/service-worker.js")
+	log.Println("Tying to route the service worker")
+	data, err := ioutil.ReadFile("firebase-messaging-sw.js")
 	if err != nil {
 		http.Error(w, "Couldn't read file", http.StatusInternalServerError)
 		return

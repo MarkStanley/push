@@ -40,7 +40,7 @@ func newRouter() *mux.Router {
 	// They result in the passing back of a cookie containing a JWT
 	r.HandleFunc("/push", ShowPushButton).Methods("GET")
 	r.HandleFunc("/push", PushMessage).Methods("POST")
-	r.HandleFunc("/service-worker.js", SendSW).Methods("POST")
+	r.HandleFunc("/service-worker.js", SendSW).Methods("GET", "POST", "PUT")
 
 	staticFileDirectory := http.Dir("./static/")
 	staticFileHandler := http.StripPrefix("/static/", http.FileServer(staticFileDirectory))
