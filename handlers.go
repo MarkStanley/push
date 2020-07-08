@@ -14,23 +14,8 @@ type PageData struct {
 	Token   string
 }
 
-// FCMMessage - defines the messaging struct for Firebase Cloud Messaging
-type FCMMessage struct {
-	To              string      `json:"to,omitempty"`
-	RegistrationIDs []string    `json:"registration_ids,omitempty"`
-	Data            interface{} `json:"data,omitempty"`
-}
-
-// FCMTokenMessage - the struct for a token from fcm
-type FCMTokenMessage struct {
-	Token string `json:"token" binding:"required"`
-}
-
 // FCMServerURL is the URL for firebase cloud mesasging
 var FCMServerURL = "https://fcm.googleapis.com/fcm/send"
-
-// FCMTokenMap - not clear what this is yet
-var FCMTokenMap = map[string]bool{}
 
 // IDs is some kind of array of registered users on fcm who I am about to message
 var IDs []string
@@ -58,35 +43,7 @@ func ShowPushButton(w http.ResponseWriter, r *http.Request) {
 // PushMessage pushes a message to the web
 func PushMessage(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Button pushed")
-	var tm FCMTokenMessage
-	tm.Token = r.FormValue("token")
 
-	if _, ok := FCMTokenMap[tm.Token]; !ok {
-		FCMTokenMap[tm.Token] = true
-	}
-	/*	IDs = append(IDs, tm.Token)
-		message := r.FormValue("message")
-		m := FCMMessage{
-			RegistrationIDs: IDs,
-			Data:            map[string]string{"message": message},
-		}
-
-		jd, err := json.Marshal(&m)
-		if err != nil {
-			log.Printf("Failed to marshal JSON: %s", err.Error())
-			return
-		}
-
-		log.Printf("FCM Message: %s", string(jd))
-		log.Printf("FCM Token: %s", tm.Token)
-
-
-		//Lets create the request
-		req, err := http.NewRequest("POST", FCMServerURL, bytes.NewReader(jd))
-		if err != nil {
-			log.Printf("Failed to create new HTTP request: %v", err)
-		}
-	*/
 	body := strings.NewReader(`
 		{
 			"notification": {
@@ -108,9 +65,6 @@ func PushMessage(w http.ResponseWriter, r *http.Request) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 
-	fmt.Printf("And the response was: %v", resp)
+	log.Printf("And the response was: %v\n", resp.Body)
 
-	w.Header().Set("Access-Control-Allow-Origin", "https://myway.thingitude-apps.com")
-	w.Header().Set("Access-Control-Allow-Credentials", "true")
-	//json.NewEncoder(w).Encode(sensors)
 }
